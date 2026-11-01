@@ -1,2 +1,12 @@
 /* app pages use retro.css. Page-specific bits only. */
 .page>main{padding-bottom:20px}
+
+.admingrid{display:grid;grid-template-columns:330px 1fr;gap:34px;align-items:start;padding:0 8px 40px 0}
+.stack{display:grid;gap:34px}
+.urow{display:block;width:100%;text-align:left;background:none;border:0;padding:8px 6px;cursor:pointer;font-weight:700}
+.urow:hover,.urow[aria-current="true"]{background:#000;color:#fff}
+.urow small{display:block;font-weight:600;opacity:.8}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;font-weight:600}
+.kv dt{color:#4a4a4a}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:860px){.admingrid{grid-template-columns:1fr;padding-right:0}.two2{grid-template-columns:1fr}}

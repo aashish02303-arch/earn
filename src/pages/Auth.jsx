@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import useStyle from '../useStyle.js';
 import retro from '../retro.css?inline';
 import css from '../auth.css?inline';
 import { Mark } from './Logos.jsx';
 import Computer from './Art.jsx';
+import useSession from '../useSession.js';
 import { api } from '../api.js';
 
 export default function Auth({ mode }) {
@@ -14,7 +15,12 @@ export default function Auth({ mode }) {
   const signup = mode === 'signup';
   const [f, setF] = useState({ name: '', email: '', password: '', terms: false });
   const [err, setErr] = useState({});
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(q.get('banned') ? 'Your account has been suspended.' : '');
+  const { user } = useSession();
+  useEffect(() => { if (user) nav('/dashboard', { replace: true }); }, [user]);
+  const [forgot, setForgot] = useState(false);
+  const [fmail, setFmail] = useState('');
+  const [fdone, setFdone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
   const set = k => e => setF({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
@@ -62,7 +68,8 @@ export default function Auth({ mode }) {
                 <input className="in" id="pw" type={show ? 'text' : 'password'} autoComplete={signup ? 'new-password' : 'current-password'} placeholder="At least 8 characters" value={f.password} onChange={set('password')} aria-invalid={!!err.password} />
                 <button className="show" type="button" onClick={() => setShow(!show)} aria-pressed={show}>{show ? 'Hide' : 'Show'}</button>
               </div>
-              <div className="err">{err.password}</div></div>
+              <div className="err">{err.password}</div>
+              {!signup && <button type="button" className="forgot" onClick={() => { setForgot(true); setFdone(false); }}>Forgot password?</button>}</div>
             {signup && <div className="field"><label className="check"><input type="checkbox" checked={f.terms} onChange={set('terms')} /> I agree to the terms and privacy policy.</label>
               <div className="err">{err.terms}</div></div>}
             <button className="btn big full" type="submit" disabled={busy}>{signup ? 'Create account' : 'Log in'}</button>
@@ -73,6 +80,23 @@ export default function Auth({ mode }) {
         </div>
         <div className="side" aria-hidden="true"><Computer /></div>
       </main>
+      {forgot && (
+        <div className="ov" onMouseDown={e => { if (e.target === e.currentTarget) setForgot(false); }}>
+          <div className="sheet" data-t="forgot.exe" role="dialog" aria-modal="true" aria-label="Forgot password">
+            <h3>Forgot your password?</h3>
+            {!fdone ? <>
+              <p className="sm" style={{ margin: '6px 0 14px' }}>Enter your email and we will send you a link to choose a new one.</p>
+              <label htmlFor="fm">Email</label>
+              <input className="in" id="fm" type="email" placeholder="you@example.com" value={fmail} onChange={e => setFmail(e.target.value)} />
+              <div className="two"><button className="btn ghost" onClick={() => setForgot(false)}>Cancel</button>
+                <button className="btn" disabled={!/^\S+@\S+\.\S+$/.test(fmail)} onClick={() => setFdone(true)}>Send reset link</button></div>
+            </> : <>
+              <p style={{ margin: '8px 0 16px', fontWeight: 700 }}>Password reset is coming soon. It is not switched on yet.</p>
+              <button className="btn full" onClick={() => setForgot(false)}>Close</button>
+            </>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

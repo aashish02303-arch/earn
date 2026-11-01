@@ -14,7 +14,12 @@ export default function Layout() {
   const timer = useRef();
   const notify = m => { setToast(m); clearTimeout(timer.current); timer.current = setTimeout(() => setToast(''), 3800); };
   const reload = useCallback(async () => {
-    try { setMe(await api('/me')); } catch (e) { if (e.status === 401) nav('/login'); else notify(e.message); }
+    try { setMe(await api('/me')); }
+    catch (e) {
+      if (e.status === 401) nav('/login');
+      else if (e.status === 403) { await api('/auth/logout', { method: 'POST' }).catch(() => {}); nav('/login?banned=1'); }
+      else notify(e.message);
+    }
   }, []);
   useEffect(() => { reload(); }, []);
   const logout = async () => { await api('/auth/logout', { method: 'POST' }); nav('/'); };

@@ -5,6 +5,7 @@ import retro from '../retro.css?inline';
 import css from '../landing.css?inline';
 import Logo, { Mark } from './Logos.jsx';
 import Computer from './Art.jsx';
+import useSession from '../useSession.js';
 import C from '../../server/config.js';   // every number on this page comes from your real rules
 
 const R = n => '₹' + (Number.isInteger(n) ? n.toLocaleString('en-IN') : n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
@@ -15,6 +16,8 @@ const Arrow = () => <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden=
 
 export default function Landing() {
   useStyle(retro); useStyle(css);
+  const { user } = useSession();
+  const go = user ? '/dashboard' : '/signup';
   const [menu, setMenu] = useState(false);
   const [steps, setSteps] = useState(3000);
   const worth = steps * perStep;
@@ -43,8 +46,8 @@ export default function Landing() {
             <a href="#earn" onClick={close}>Earnings</a>
             <a href="#payouts" onClick={close}>Payouts</a>
             <a href="#faq" onClick={close}>FAQ</a>
-            <Link to="/login" onClick={close}>Log in</Link>
-            <Link className="btn" to="/signup">Get started</Link>
+            {!user && <Link to="/login" onClick={close}>Log in</Link>}
+            <Link className="btn" to={go}>{user ? 'Dashboard' : 'Get started'}</Link>
           </nav>
           <button className="burger" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? 'X' : '≡'}</button>
         </div>
@@ -54,7 +57,7 @@ export default function Landing() {
         <div>
           <h1>Walk.<br />Earn.<br />Cash out.</h1>
           <p className="sub">Every 1,000 steps earns you <b>{R(C.inrPer1000Steps)}</b>. Cash out from {R(minInr)} by UPI, PayPal or crypto.</p>
-          <div className="row"><Link className="btn big" to="/signup">Start walking free</Link><a className="btn big ghost" href="#how">How it works</a></div>
+          <div className="row"><Link className="btn big" to={go}>{user ? 'Open dashboard' : 'Start walking free'}</Link><a className="btn big ghost" href="#how">How it works</a></div>
         </div>
         <div className="art"><Computer /></div>
       </section>
@@ -118,7 +121,7 @@ export default function Landing() {
           <h2 className="sech">Bring a friend. Earn {R(refInr)}.</h2>
           <p>Share your link. When your friend reaches {C.referralSteps.toLocaleString()} steps, {R(refInr)} lands in your balance.</p>
           <ol className="flow"><li><b>1</b>Share your link</li><li><b>2</b>Friend signs up and walks</li><li><b>3</b>You earn {R(refInr)}</li></ol>
-          <Link className="btn big" to="/signup">Get my invite link</Link>
+          <Link className="btn big" to={go}>Get my invite link</Link>
         </div>
       </section>
 
@@ -132,12 +135,12 @@ export default function Landing() {
       <section className="wrap final">
         <h2 className="sech">Your first {R(C.inrPer1000Steps)} is 1,000 steps away.</h2>
         <p>Join free and start earning on your next walk.</p>
-        <Link className="btn big" to="/signup">Create my account</Link>
+        <Link className="btn big" to={go}>{user ? 'Open dashboard' : 'Create my account'}</Link>
       </section>
 
       <footer className="foot"><div className="wrap foot-in">
         <Link className="logo" to="/"><span className="logo-i"><Mark size={26} /></span>tasknest</Link>
-        <nav aria-label="Footer"><a href="#how">How it works</a><a href="#faq">FAQ</a><Link to="/login">Log in</Link><Link to="/signup">Sign up</Link></nav>
+        <nav aria-label="Footer"><a href="#how">How it works</a><a href="#faq">FAQ</a>{user ? <Link to="/dashboard">Dashboard</Link> : <><Link to="/login">Log in</Link><Link to="/signup">Sign up</Link></>}</nav>
         <p>© {new Date().getFullYear()} TaskNest</p>
       </div></footer>
     </div>

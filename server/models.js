@@ -12,7 +12,9 @@ export const User = models.User || model('User', new Schema({
   balanceMicro: { type: Number, default: 0, min: 0 },
   totalSteps: { type: Number, default: 0 },
   lastSyncAt: Date,
-  isAdmin: { type: Boolean, default: false }
+  isAdmin: { type: Boolean, default: false },
+  banned: { type: Boolean, default: false },
+  bannedReason: String
 }, { timestamps: true }));
 
 const stepsSchema = new Schema({ userId: { type: Id, required: true }, day: String, steps: { type: Number, default: 0 } });

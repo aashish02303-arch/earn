@@ -21,3 +21,9 @@
 .switch button{border:0;background:none;font-weight:800;text-decoration:underline;cursor:pointer}
 .side{max-width:440px;justify-self:center;width:100%}
 @media(max-width:860px){.authwrap{grid-template-columns:1fr;padding-top:30px}.side{display:none}.authwrap .card{margin-right:0}}
+
+.forgot{border:0;background:none;font-weight:800;text-decoration:underline;cursor:pointer;margin:-4px 0 10px;padding:0}
+.ov{position:fixed;inset:0;background:#000000b3;display:grid;place-items:center;z-index:50;padding:16px}
+.sheet{background:#fff;border:3px solid #fff;outline:3px solid #000;box-shadow:8px 8px 0 #000;width:min(420px,100%);padding:22px;position:relative}
+.sheet h3{font-size:1.4rem}
+.two{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:6px}
